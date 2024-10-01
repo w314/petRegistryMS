@@ -6,13 +6,12 @@ drop table pet;
 create table pet(
 id int primary key,
 name varchar(50),
-type varchar(50),
-owner_id int
+type varchar(50)
 );
 
-insert into pet values(1, 'slimy', 'snail', 1);
-insert into pet values(2, 'rover', 'dog', 1);
-insert into pet values(3, 'hoppy', 'rabbit', 2);
-insert into pet values(4, 'spiky', 'hedgehog', 2);
+insert into pet values(1, 'slimy', 'snail');
+insert into pet values(2, 'rover', 'dog');
+insert into pet values(3, 'hoppy', 'rabbit');
+insert into pet values(4, 'spiky', 'hedgehog');
 
 commit;

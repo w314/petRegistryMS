@@ -1,22 +1,18 @@
-package com.wp.petMS.entity;
+package com.wp.ownerMS.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="pet")
-public class Pet {
+@Table(name="owner")
+public class Owner {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(nullable = false)
     private int id;
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String type;
-
 
     public int getId() {
         return id;
@@ -34,21 +30,11 @@ public class Pet {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-
     @Override
     public String toString() {
-        return "Pet{" +
+        return "Owner{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
                 '}';
     }
 }

@@ -1,0 +1,17 @@
+create schema registry;
+use registry;
+
+drop table registry;
+
+create table registry(
+id int primary key,
+owner_id int,
+pet_id int
+);
+
+insert into registry values(1, 1, 1);
+insert into registry values(2, 1, 2);
+insert into registry values(3, 2, 3);
+insert into registry values(4, 2, 4);
+
+commit;

@@ -7,7 +7,6 @@ public class PetDTO {
     private int id;
     private String name;
     private String type;
-    private int ownerId;
 
     public int getId() {
         return id;
@@ -33,20 +32,12 @@ public class PetDTO {
         this.type = type;
     }
 
-    public int getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
-    }
 
     public static PetDTO toPetDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
         petDTO.setId(pet.getId());
         petDTO.setName(pet.getName());
         petDTO.setType(pet.getType());
-        petDTO.setOwnerId(pet.getOwnerId());
         return petDTO;
     }
 

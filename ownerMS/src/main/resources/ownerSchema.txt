@@ -1,0 +1,14 @@
+create schema owner;
+use owner;
+
+drop table owner;
+
+create table owner(
+id int primary key,
+name varchar(50)
+);
+
+insert into owner values(1, 'bob');
+insert into owner values(2, 'bobek');
+
+commit;

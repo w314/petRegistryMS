@@ -1,22 +1,10 @@
-package com.wp.petMS.entity;
+package com.wp.ownerMS.dto;
 
-import jakarta.persistence.*;
+public class PetDTO {
 
-@Entity
-@Table(name="pet")
-public class Pet {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(nullable = false)
     private int id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private String type;
-
 
     public int getId() {
         return id;
@@ -42,10 +30,9 @@ public class Pet {
         this.type = type;
     }
 
-
     @Override
     public String toString() {
-        return "Pet{" +
+        return "PetDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +

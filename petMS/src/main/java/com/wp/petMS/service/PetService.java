@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -27,13 +28,12 @@ public class PetService {
         return petDTOS;
     }
 
-    public List<PetDTO> getPetsByOwner(int ownerId) {
-        List<Pet> pets = this.petRepo.findByOwnerId(ownerId);
-        List<PetDTO> petDTOS = new ArrayList<>();
-        for(Pet pet: pets) {
-            PetDTO petDTO = PetDTO.toPetDTO(pet);
-            petDTOS.add(petDTO);
+    public PetDTO getPetById(int petId) {
+        Optional<Pet> petOptional = this.petRepo.findById(petId);
+        PetDTO petDTO = null;
+        if(petOptional.isPresent()) {
+            petDTO = PetDTO.toPetDTO(petOptional.get());
         }
-        return petDTOS;
+        return petDTO;
     }
 }

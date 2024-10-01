@@ -25,9 +25,9 @@ public class PetController {
         return new ResponseEntity<>(petDTOS, HttpStatus.OK);
     }
 
-    @GetMapping("owners/{ownerId}/pets")
-    public ResponseEntity<List<PetDTO>> getAllPetsByOwnerId(@PathVariable int ownerId) {
-        List<PetDTO> petDTOS = this.petService.getPetsByOwner(ownerId);
-        return new ResponseEntity<>(petDTOS, HttpStatus.OK);
+    @GetMapping("pets/{petId}")
+    public ResponseEntity<PetDTO> getPetById(@PathVariable int petId) {
+        PetDTO petDTO = this.petService.getPetById(petId);
+        return new ResponseEntity<>(petDTO, HttpStatus.OK);
     }
 }
