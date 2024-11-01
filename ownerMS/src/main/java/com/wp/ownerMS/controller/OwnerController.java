@@ -2,7 +2,6 @@ package com.wp.ownerMS.controller;
 
 import com.wp.ownerMS.dto.OwnerDTO;
 import com.wp.ownerMS.dto.PetDTO;
-import com.wp.ownerMS.dto.RegistryDTO;
 import com.wp.ownerMS.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
