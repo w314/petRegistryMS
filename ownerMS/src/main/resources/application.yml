@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    # configuring Cloud Config
+    consul:
+      config:
+        # true enables Cloud Config
+        enabled: true
+        # sets the base folder for configuration
+        # config is the default name
+        prefix: config
+        # sets the folder name used by all applications
+        defaultContext: application
+        # set the value of the separator
+        # used to separate the profile name
+        # in property sources with profiles
+        profileSeparator: '::'
+        format: YAML
