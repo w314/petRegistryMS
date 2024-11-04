@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    # configuring Cloud Config
+    consul:
+      config:
+        # true enables Cloud Config
+        enabled: true
+        # sets the base folder for configuration
+        # config is the default name
+        prefix: config
+        # sets the folder name used by all applications
+        defaultContext: application
+        # set the value of the separator
+        # used to separate the profile name
+        # in property sources with profiles
+        profileSeparator: '::'
+        # name of file config for specific microservice
+        # is stored in the microsercice's name space
+        # default is `data`
+        data-key: data
+        # configures consul server to resend config data
+        # to the microservice at every 100ms
+        watch:
+          delay: 100
+        # IMPORTANT will not work without setting format
+        format: YAML
