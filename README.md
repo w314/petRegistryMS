@@ -39,5 +39,15 @@ server:
 registryUri: http://localhost:8400
 petUri: http://localhost:8100
 ```
-2. open & start microservices in spring suite
 
+2. open & start microservices in spring suite
+- open Spring Suite
+- File 
+    > Import Project 
+    > Select Import Vizard: Maven / Existing Maven Project
+    > Browse Select PetregistryMS folder
+    > Select all subfolders and click Finish
+
+- Update projects
+    - right-click on porject > Maven > Update Project
+    - select all projects to be udpated
