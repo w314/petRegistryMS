@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: ownerMS
   cloud:
     # configuring Cloud Config
     consul:

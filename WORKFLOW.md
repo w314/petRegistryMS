@@ -217,3 +217,81 @@ spring:
         format: YAML
 ```
 
+## Setup Service Discovery
+
+### 1. Add Dependency 
+
+`pom.xml`
+```xml
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>	
+```
+- add to all microservices
+- will register microservice with the Consul Server
+
+### 2. Modify Microservice Configuration
+
+Remove urls of other microservices from the configuration file of the ownerMS microservice
+
+### 3. Get Microservice URL from Service Discovery
+
+In `OwnerController.java`:
+```java
+// import DiscoveryClient
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+// other imports
+
+@RestController
+@RequestMapping
+public class OwnerController {
+
+    @Autowired
+    OwnerService ownerService;
+    
+    // autowire DiscoveryClient
+    @Autowired
+    private DiscoveryClient client;
+
+    // define variables to store microservice urls
+    private String registryUri;
+    private String petUri ;
+
+    @GetMapping("/owners")
+    public ResponseEntity<List<OwnerDTO>> getOwners() {
+        List<OwnerDTO> ownerDTOS = this.ownerService.getOwners();
+        return new ResponseEntity<>(ownerDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping("/owners/{ownerId}")
+    public ResponseEntity<OwnerDTO> getOwner(@PathVariable int ownerId) {
+    	
+    	// get owner from service
+    	// this will include an empty list of petDTOs
+        OwnerDTO ownerDTO = this.ownerService.getOwnerById(ownerId);
+        System.out.println(ownerDTO);
+        
+        // use service discovery to get microservice urls
+        // get registryMS microservice urls from service discovery
+        // use microservice name
+        // returns list of serviceIntance (can be several instances of the MS running)
+        List<ServiceInstance> listOfRegistryInstances = client.getInstances("registryMS");
+        // check if there is at least one instance returned
+        if(listOfRegistryInstances != null && !listOfRegistryInstances.isEmpty()) {
+        	// get microservice uri from the first instance
+        	// will contain host and port number
+        	registryUri = listOfRegistryInstances.get(0).getUri().toString();
+        	System.out.println("REGISTRY URL: " + registryUri);
+        }
+        
+        
+        // define registry microservice url needed to get list of pet ids
+        String registryUrl = registryUri + "/owners/" + ownerDTO.getId() + "/pets";
+        // get the ids of pets belonging to the owner
+        List<Integer> petIds = new RestTemplate().getForEntity(registryUrl, List.class).getBody();
+        
+        // get url for petMS the same way
+    }
+}
+```
