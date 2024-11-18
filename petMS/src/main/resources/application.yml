@@ -7,7 +7,7 @@ spring:
         enabled: true
         # sets the base folder for configuration
         # config is the default name
-        prefix: config
+        prefixes: config
         # sets the folder name used by all applications
         defaultContext: application
         # set the value of the separator

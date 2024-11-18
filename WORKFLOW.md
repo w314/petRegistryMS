@@ -1,6 +1,6 @@
-# Monolith -> Microservices
+# Monolith -> Microservices Step by Step
 
-## Separate Services
+## STEP-1: Separate Services
 
 - Created 3 services
     - petService: to list pets
@@ -71,7 +71,7 @@ public class OwnerController {
 }
 ```
 
-## Setup Distributed Configuration
+## STEP-2: Setup Distributed Configuration
 
 ### Install `consul`
 - install from: [consul](https://developer.hashicorp.com/consul)
@@ -124,13 +124,14 @@ Create new `Key/Value` a file.
 
 `config/ownerMS/data`
 ```yml
+# server config
+server:
+  port: 8200
 # db config
 spring:
   datasource:
     url: jdbc:mysql://localhost/owner
-# server config
-server:
-  port: 8200
+
 # config to store url of other microservices
 registryUri: http://localhost:8400
 petUri: http://localhost:8100
@@ -138,24 +139,24 @@ petUri: http://localhost:8100
 
 `config/petMS/data`
 ```yml
+# server config
+server:
+  port: 8100
 # db config
 spring:
   datasource:
     url: jdbc:mysql://localhost/pet
-# server config
-server:
-  port: 8100
 ```
 
 `config/registryMS/data`
 ```yml
+# server config
+server:
+  port: 8400
 # db config
 spring:
   datasource:
     url: jdbc:mysql://localhost/registry
-# server config
-server:
-  port: 8400
 ```
 
 ### Configure Microservices to work with Consul Server
@@ -198,7 +199,7 @@ spring:
         enabled: true
         # sets the base folder for configuration
         # config is the default name
-        prefix: config
+        prefixes: config
         # sets the folder name used by all applications
         defaultContext: application
         # set the value of the separator
@@ -217,7 +218,7 @@ spring:
         format: YAML
 ```
 
-## Setup Service Discovery
+## STEP-3: Setup Service Discovery
 
 ### 1. Add Dependency 
 
@@ -235,9 +236,13 @@ spring:
 
 Remove urls of other microservices from the configuration file of the ownerMS microservice
 
-### 3. Get Microservice URL from Service Discovery
+### 3. Modify Microservice Controller
 
-In `OwnerController.java`:
+- use `DiscoveryClient`
+- to get microservice urls from consul server
+
+In `OwnerController
+.java`:
 ```java
 // import DiscoveryClient
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -295,3 +300,49 @@ public class OwnerController {
     }
 }
 ```
+
+
+## STEP-4: Implement Load Balancing with `Spring Cloud Load Balancer`
+
+### Update Configuration in Consul
+
+UPDATE APPLICATION CONFIGURATION
+
+`config/application/data`
+```yml
+# server config
+server:
+  # setting port to 0 
+  # will make consul choose 
+  # random port number
+  port: 0
+spring:
+  # db config
+  datasource:
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+  # unique instance id configuration
+  # need unique instance id for consul to register 2 services
+  cloud:
+    consul:
+      discovery:
+        instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+```
+
+UPDATE MICROSERVICE CONFIGURATION
+
+Remove port config from the configuration in the microservice, example:
+
+`config/petMS/data`
+```yml
+# db config
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/pet
+```
+
+
+

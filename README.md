@@ -1,6 +1,13 @@
-# Start PetRegistry
+# Instructions to use Pet Registry
 
-1. start consul
+## Current Status
+- distribution configuraton is implemented
+- ownerMS uses `CloudLoadBalancer` to dynamically balance several pet or registry instances
+
+
+## Start PetRegistry
+
+### 1. start consul
 ```bash
 consul agent -server -bootstrap-expect=1 -data-dir=consul-data2 -ui -bind=192.168.254.79
 ```
@@ -16,31 +23,55 @@ To recreate key-value pairs create:
 For Common Config:
 `config/applciation/data`
 ```yml
+# server config
+server:
+  # setting port to 0 
+  # will make consul choose 
+  # random port number
+  port: 0
 spring:
+  # db config
   datasource:
     username: root
     password: password
   jpa:
     hibernate:
       ddl-auto: update
+  # unique instance id configuration
+  # need unique instance id for consul 
+  # to register more than 1 services
+  cloud:
+    consul:
+      discovery:
+        instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
 ```
 
-For ownerMS:
-`config/ownerMS/data`
+For ownerMS: `config/ownerMS/data`
 ```yml
 # db config
 spring:
   datasource:
     url: jdbc:mysql://localhost/owner
-# server config
-server:
-  port: 8200
-# config to store url of other microservices
-registryUri: http://localhost:8400
-petUri: http://localhost:8100
 ```
 
-2. open & start microservices in spring suite
+For petMS: `config/petMS/data`
+```yml
+# db config
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/pet
+```
+
+For registryMS: `config/registryMS/data`
+```yml
+# db config
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/registry
+```
+
+
+### 2. open & start microservices in spring suite
 - open Spring Suite
 - File 
     > Import Project 
@@ -51,3 +82,20 @@ petUri: http://localhost:8100
 - Update projects
     - right-click on porject > Maven > Update Project
     - select all projects to be udpated
+
+To start several instance of a microservice in Sprint Suite:
+- right click microservice
+- duplicate configuration
+- run all services
+
+Verify MS running properly:
+- running `localhost:<owner-port>/owners/1` verifies all
+- ownerMS:
+  - `localhost:<port>/owners`
+  - should work without any other ms working
+- registryMS:
+  - `localhost:<port>/owners/<owner_id>/pets` 
+  - should work without any other ms working
+- petMS
+  - `localhost:<port>/pets
+  - should work without any other ms working
