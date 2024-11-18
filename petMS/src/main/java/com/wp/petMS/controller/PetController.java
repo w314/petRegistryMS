@@ -28,6 +28,7 @@ public class PetController {
     @GetMapping("pets/{petId}")
     public ResponseEntity<PetDTO> getPetById(@PathVariable int petId) {
         PetDTO petDTO = this.petService.getPetById(petId);
+        System.out.println("Sending pet info with pet id: " + petId);
         return new ResponseEntity<>(petDTO, HttpStatus.OK);
     }
 }

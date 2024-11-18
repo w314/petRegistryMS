@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,14 @@ public class OwnerController {
     
     @Autowired
     private DiscoveryClient client;
+    
+    // autowire load balanced rest template
+    @Autowired
+    RestTemplate template;
 
     // define variables to store microservice urls
+    // used only for non-load balanced microservices
     private String registryUri;
-    private String petUri ;
 
     @GetMapping("/owners")
     public ResponseEntity<List<OwnerDTO>> getOwners() {
@@ -38,6 +43,7 @@ public class OwnerController {
         return new ResponseEntity<>(ownerDTOS, HttpStatus.OK);
     }
 
+    // display owner with with the list of its pets with all pet details
     @GetMapping("/owners/{ownerId}")
     public ResponseEntity<OwnerDTO> getOwner(@PathVariable int ownerId) {
     	
@@ -47,7 +53,8 @@ public class OwnerController {
         System.out.println(ownerDTO);
         
         // use service discovery to get microservice urls
-        // get registryMS microservice urls from service discovery
+        // used only for non-load-balanced microservices
+        // to get registryMS microservice urls from service discovery
         // use microservice name
         // returns list of serviceIntance (can be several instances of the MS running)
         List<ServiceInstance> listOfRegistryInstances = client.getInstances("registryMS");
@@ -57,11 +64,6 @@ public class OwnerController {
         	// will contain host and port number
         	registryUri = listOfRegistryInstances.get(0).getUri().toString();
         	System.out.println("REGISTRY URL: " + registryUri);
-        }
-        // get petMS microservice urls from service registry
-        List<ServiceInstance> listOfPetInstances = client.getInstances("petMS");
-        if(listOfPetInstances != null && !listOfPetInstances.isEmpty()) {
-        	petUri = listOfPetInstances.get(0).getUri().toString();
         }
         
         
@@ -75,10 +77,9 @@ public class OwnerController {
 
         // get details for each pet that belongs to the owner
         for(Integer petId: petIds) {
-        	// define pet microservice url for getting pet details
-        	String petUrl = petUri + "/pets/" + petId;
-        	System.out.println(petUrl);
-            PetDTO petDTO = new RestTemplate().getForObject(petUrl,PetDTO.class);
+        	// use load balanced rest template to contact petMS
+        	// use spring application name instead and form proper url
+            PetDTO petDTO = template.getForObject("http://petMS/pets/"+petId,PetDTO.class);
             petDTOS.add(petDTO);
         }
         // use the information received from the pet microservice 

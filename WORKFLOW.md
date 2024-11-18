@@ -302,7 +302,7 @@ public class OwnerController {
 ```
 
 
-## STEP-4: Implement Load Balancing with `Spring Cloud Load Balancer`
+## STEP-4: Implement Dynamic Load Balancing
 
 ### Update Configuration in Consul
 
@@ -343,6 +343,74 @@ spring:
   datasource:
     url: jdbc:mysql://localhost/pet
 ```
+
+### Update ownerMS
+
+#### Add dependency
+
+`pom.xml`
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+</dependency>
+```
+
+#### Create Load Balanced RestTemplate
+
+`src/main/java/controller/OwnerConfig.java`
+```java
+// needs the @Configuration annotation
+@Configuration
+public class OwnerConfig {
+	
+	@Bean
+	// @LoadBalanced will return a load balanced rest template to use
+	@LoadBalanced
+	RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+}
+```
+
+#### Update Controller Class
+
+`src/main/java/controller/OwnerMS.java`
+```java
+public class CustomerController {
+
+    // autowire load balanced RestTemplate
+    @Autowire
+    RestTemplate template;
+
+    // remove variable to store petUri
+    // private String petUri ;
+
+
+    // remove getting uli-s from service registry
+    /*
+        // get petMS microservice urls from service registry
+       List<ServiceInstance> listOfPetInstances = client.getInstances("petMS");
+       if(listOfPetInstances != null && !listOfPetInstances.isEmpty()) {
+       	petUri = listOfPetInstances.get(0).getUri().toString();
+      }
+    */
+
+    // WHEN CONTACTING THE PET MICROSERCIE
+    // remove
+    // define pet microservice url for getting pet details
+    // String petUrl = petUri + "/pets/" + petId;
+    // instead of using
+    // PetDTO petDTO = new RestTemplate().getForObject(petUrl,PetDTO.class);
+    
+    // use load balanced template when making API calls to other microservices
+    // add MS name and form url as needed
+    PetDTO petDTO = template.getForObject("http://petMS/pets/"+petId,PetDTO.class);
+```
+
+
+
+
 
 
 

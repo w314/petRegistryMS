@@ -2,7 +2,8 @@
 
 ## Current Status
 - distribution configuraton is implemented
-- ownerMS uses `CloudLoadBalancer` to dynamically balance several pet or registry instances
+- ownerMS uses `DiscoveryClient` to discover registryMS service, without any load balancing
+- ownerMS uses a load balanced `RestTemplate` and `consul` to dynamically balance several pet instances
 
 
 ## Start PetRegistry
