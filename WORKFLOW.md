@@ -428,6 +428,38 @@ Resiliency will stop our MS to continously trying to connect an other MS that is
 </dependency>
 ```
 
+### 5-2 Configure Resilience4j
+
+in `src/main/resources/application.yml` add:
+```yml
+# configure Resilience4j
+resilience4j.circuitbreaker:
+  instances:
+    # name of service
+    ownerMS:
+      # threshold of failure % based on which the 
+      # circuit breaker will move to the open state
+      failure-rate-threshold: 50
+      # minimum number of calls to make in closed state
+      minimum-number-of-calls: 5
+      # minimum number of call attempts in open state
+      permitted-number-of-calls-in-half-open-state: 3
+      # time circuit breaker should wait
+      # before moving from open state to half open state
+      wait-duration-in-open-state: 20s
+      # allow to automatically move to half open state
+      automatic-transition-from-open-to-half-open-enabled: true
+```
+
+### 5-4 Apply Resiliency to Controller Methods
+
+`OwnerController.java`
+```java
+// import package
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
+// use circuitBreaker when calling other microservices
+
 
 
 
