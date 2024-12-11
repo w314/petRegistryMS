@@ -24,3 +24,5 @@ spring:
           delay: 100
         # IMPORTANT will not work without setting format
         format: YAML
+#  datasource:
+#    url: jdbc:mysql://localhost/registry

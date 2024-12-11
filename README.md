@@ -17,12 +17,15 @@ if getting error
 ```bash
  startup error: error="refusing to rejoin cluster because server has been offline for more than the configured server_rejoin_age_max (168h0m0s) - consider wiping your data dir"
 ```
-Delete data directory `consul-data2`, under `c:Users/piros`
+1. Delete data directory `consul-data2`, under `c:Users/piros`
+2. restart consul
+3. open consul on localhost:8500
+4. recreate key-value pairs
 
-To recreate key-value pairs create:
+Key-Value Pairs To Create:
 
 For Common Config:
-`config/applciation/data`
+`config/application/data`
 ```yml
 # server config
 server:
@@ -90,7 +93,7 @@ To start several instance of a microservice in Sprint Suite:
 - run all services
 
 Verify MS running properly:
-- running `localhost:<owner-port>/owners/1` verifies all
+- running `localhost:<owner-port>/owners/1` verifies all ms running properly
 - ownerMS:
   - `localhost:<port>/owners`
   - should work without any other ms working

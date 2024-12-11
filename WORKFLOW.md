@@ -408,7 +408,9 @@ public class CustomerController {
     PetDTO petDTO = template.getForObject("http://petMS/pets/"+petId,PetDTO.class);
 ```
 
+## STEP-5 Implement Resiliency
 
+Resiliency will stop our MS to continously trying to connect an other MS that is down.
 
 
 
