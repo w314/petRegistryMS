@@ -3,11 +3,12 @@ package com.wp.ownerMS.controller;
 import com.wp.ownerMS.dto.OwnerDTO;
 import com.wp.ownerMS.dto.PetDTO;
 import com.wp.ownerMS.service.OwnerService;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +45,10 @@ public class OwnerController {
     }
 
     // display owner with with the list of its pets with all pet details
+    // apply resiliency by resilience4j's circuitBreaker
+    // provide name of instance name provided in application.yml configuration file
+    // provide name of fallback method
+    @CircuitBreaker(name="ownerMS", fallbackMethod="getOwnerFallback")
     @GetMapping("/owners/{ownerId}")
     public ResponseEntity<OwnerDTO> getOwner(@PathVariable int ownerId) {
     	
@@ -88,5 +93,12 @@ public class OwnerController {
         
         return new ResponseEntity<>(ownerDTO, HttpStatus.OK);
 
+    }
+    
+    
+    // Fallback Method for getOwner function
+    public OwnerDTO getOwnerFallback(int ownerId, Throwable throwable) {
+    	System.out.println("In fallback method");
+    	return new OwnerDTO();
     }
 }

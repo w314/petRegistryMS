@@ -413,6 +413,21 @@ public class CustomerController {
 Resiliency will stop our MS to continously trying to connect an other MS that is down.
 
 
+### 5-1 Add dependencies
+
+`pom.xml` in OwnerMS
+```xml
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-spring-boot2</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
 
 
 

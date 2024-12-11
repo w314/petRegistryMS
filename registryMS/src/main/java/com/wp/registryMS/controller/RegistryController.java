@@ -22,6 +22,8 @@ public class RegistryController {
     @GetMapping("/owners/{ownerId}/pets")
     public ResponseEntity<List<Integer>> getPetsByOwner(@PathVariable int ownerId) {
         List<Integer> pets = this.registryService.getPetsByOwner(ownerId);
+        if(ownerId == 1) 
+        	throw new RuntimeException();
         return new ResponseEntity<>(pets, HttpStatus.OK);
     }
 }
